@@ -143,10 +143,14 @@ func NewProject(mainfile string, args ...string) *Project {
 	if mainfile == "" {
 		mainfile = "main.go"
 	}
-	appName := mainfile[0 : len(mainfile)-len(goExt)]
+	//appName := mainfile[0 : len(mainfile)-len(goExt)]
 	mainfile, _ = filepath.Abs(mainfile)
 
 	dir := filepath.Dir(mainfile)
+    appName := filepath.Base(dir)
+    if isWindows {
+        appName += ".exe"
+    }
 
 	p := &Project{
 		MainFile:                  mainfile,

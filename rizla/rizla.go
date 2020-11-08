@@ -184,9 +184,12 @@ func isDirectory(fullname string) bool {
 }
 
 func buildProject(p *Project) error {
-
+	buildProject := filepath.Base(p.dir)
+	if isWindows {
+		buildProject += ".exe"
+	}
 	// relative := p.MainFile[len(p.dir)+1:len(p.MainFile)-3] + goExt
-	goBuild := exec.Command("go", "build", ".")
+	goBuild := exec.Command("go", "build", "-o", buildProject, ".")
 	goBuild.Dir = p.dir
 	goBuild.Stdout = p.Out.Printer.Output
 	goBuild.Stderr = p.Err.Printer.Output
@@ -260,7 +263,7 @@ func killProcess(proc *os.Process, appName string) (err error) {
 			err = exec.Command("killall", "-KILL", strconv.Itoa(proc.Pid)).Run()
 		} else {
 			// err = exec.Command("kill", "-INT", "-"+strconv.Itoa(proc.Pid)).Run()
-			err = exec.Command("pkill", "-SIGINT", appName).Run()
+            err = exec.Command("pkill", "-SIGINT", appName).Run()
 		}
 	}
 	proc = nil
